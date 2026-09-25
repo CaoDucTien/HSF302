@@ -22,6 +22,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
     Optional<Student> findByStudentCode(String studentCode);
     boolean existsByEmail(String email);
     long countByActiveTrue();
+    long deleteByActiveFalse();
 
     List<Student> findByFullNameContainingIgnoreCase(String keyword);
     List<Student> findByEmailEndingWith(String suffix);
