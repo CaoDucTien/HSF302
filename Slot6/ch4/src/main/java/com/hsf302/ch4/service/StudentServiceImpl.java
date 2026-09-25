@@ -154,6 +154,18 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
+    public Student updateGpa(String studentCode, double newGpa) {
+        if (newGpa < 0 || newGpa > 4) {
+            throw new IllegalArgumentException("GPA phai trong khoang [0, 4]");
+        }
+        Student s = studentRepository.findByStudentCode(studentCode)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found: " + studentCode));
+        s.setGpa(newGpa);
+        return s;
+    }
+
+    @Override
     public List<Student> search(String kw, String deptCode, Double minGpa, Boolean active) {
         Specification<Student> spec = Specification.where(StudentSpecs.nameContains(kw))
                 .and(StudentSpecs.inDepartment(deptCode))
