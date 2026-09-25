@@ -34,6 +34,7 @@ public class ExerciseRunner implements CommandLineRunner {
         todo12();
         todo13();
         todo14();
+        todo15();
     }
 
     private void todo6() {
@@ -113,6 +114,11 @@ public class ExerciseRunner implements CommandLineRunner {
     private void todo14() {
         title("TODO 14: DTO projection + aggregate + LEFT JOIN");
         printList("Department statistics", departmentService.getStatistics());
+    }
+
+    private void todo15() {
+        title("TODO 15: Subquery - GPA above average");
+        printList("GPA > AVG", studentService.findAboveAverageGpa());
     }
 
     private void title(String t) {
