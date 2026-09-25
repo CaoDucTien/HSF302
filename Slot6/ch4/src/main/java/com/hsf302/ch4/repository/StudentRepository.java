@@ -1,6 +1,7 @@
 package com.hsf302.ch4.repository;
 
 import com.hsf302.ch4.dto.StudentSummary;
+import com.hsf302.ch4.pojo.Department;
 import com.hsf302.ch4.pojo.Gender;
 import com.hsf302.ch4.pojo.Student;
 import org.springframework.data.domain.Page;
@@ -64,6 +65,10 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
 
     @Query("SELECT s FROM Student s WHERE s.department.code = :code AND s.active = true")
     Page<Student> findActiveByDepartment(@Param("code") String code, Pageable pageable);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Student s SET s.department = :to WHERE s.department = :from")
+    int transferStudents(@Param("from") Department from, @Param("to") Department to);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Student s SET s.active = false WHERE s.gpa < :threshold AND s.active = true")
