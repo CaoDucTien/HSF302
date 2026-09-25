@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.List;
 
 @Component
 @Order(2)
@@ -24,6 +25,7 @@ public class ExerciseRunner implements CommandLineRunner {
         System.out.println("========== EXERCISE RUNNER STARTED ==========");
         todo6();
         todo7();
+        todo8();
     }
 
     private void todo6() {
@@ -53,6 +55,17 @@ public class ExerciseRunner implements CommandLineRunner {
                 + ", totalPages=" + page.getTotalPages()
                 + ", hasNext=" + page.hasNext()
                 + ", hasPrevious=" + page.hasPrevious());
+    }
+
+    private void todo8() {
+        title("TODO 8: findBy / existsBy / countBy");
+        for (String code : List.of("AI002", "XX999")) {
+            System.out.println("findByStudentCode(" + code + ") -> " +
+                    studentService.findByStudentCode(code).map(Object::toString).orElse("Not found"));
+        }
+        System.out.println("isEmailExisted(binh.tt@fpt.edu.vn) -> "
+                + studentService.isEmailExisted("binh.tt@fpt.edu.vn"));
+        System.out.println("countActive -> " + studentService.countActive());
     }
 
     private void title(String t) {
