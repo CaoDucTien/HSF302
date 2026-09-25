@@ -20,6 +20,23 @@ public class ExerciseRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         System.out.println("========== EXERCISE RUNNER STARTED ==========");
+        todo6();
+    }
+
+    private void todo6() {
+        title("TODO 6: count / findById / existsById");
+        System.out.println("Departments: " + departmentService.count());
+        System.out.println("Students   : " + studentService.count());
+
+        studentService.findById(1L).ifPresentOrElse(
+                s -> System.out.println("findById(1)  -> " + s),
+                () -> System.out.println("findById(1)  -> Not found"));
+
+        System.out.println("findById(99) -> " + studentService.findById(99L)
+                .map(Object::toString)
+                .orElse("Not found"));
+
+        System.out.println("existsById(4) department -> " + departmentService.existsById(4L));
     }
 
     private void title(String t) {
