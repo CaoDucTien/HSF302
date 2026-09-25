@@ -1,10 +1,12 @@
 package com.hsf302.ch4.runner;
 
+import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.service.DepartmentService;
 import com.hsf302.ch4.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -21,6 +23,7 @@ public class ExerciseRunner implements CommandLineRunner {
     public void run(String... args) {
         System.out.println("========== EXERCISE RUNNER STARTED ==========");
         todo6();
+        todo7();
     }
 
     private void todo6() {
@@ -37,6 +40,19 @@ public class ExerciseRunner implements CommandLineRunner {
                 .orElse("Not found"));
 
         System.out.println("existsById(4) department -> " + departmentService.existsById(4L));
+    }
+
+    private void todo7() {
+        title("TODO 7: Sort & Pageable");
+
+        printList("All students order by GPA desc", studentService.findAllOrderByGpaDesc());
+
+        Page<Student> page = studentService.findPage(1, 3, "fullName");
+        printList("Page index " + page.getNumber() + " (size " + page.getSize() + ")", page.getContent());
+        System.out.println("totalElements=" + page.getTotalElements()
+                + ", totalPages=" + page.getTotalPages()
+                + ", hasNext=" + page.hasNext()
+                + ", hasPrevious=" + page.hasPrevious());
     }
 
     private void title(String t) {
