@@ -26,6 +26,7 @@ public class ExerciseRunner implements CommandLineRunner {
         todo6();
         todo7();
         todo8();
+        todo9();
     }
 
     private void todo6() {
@@ -66,6 +67,13 @@ public class ExerciseRunner implements CommandLineRunner {
         System.out.println("isEmailExisted(binh.tt@fpt.edu.vn) -> "
                 + studentService.isEmailExisted("binh.tt@fpt.edu.vn"));
         System.out.println("countActive -> " + studentService.countActive());
+    }
+
+    private void todo9() {
+        title("TODO 9: ContainingIgnoreCase / EndingWith / IsNull");
+        printList("Name contains 'thi' (case-insensitive)", studentService.searchByName("thi"));
+        printList("Email ending with '@gmail.com'", studentService.findByEmailDomain("@gmail.com"));
+        printList("Students without email", studentService.findWithoutEmail());
     }
 
     private void title(String t) {
