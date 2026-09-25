@@ -10,4 +10,6 @@ public interface DepartmentService {
     boolean existsById(Long id);
     List<Department> findDepartmentsWithoutStudents();
     List<DepartmentStatDTO> getStatistics();
+    Optional<Department> findByCode(String code);
+    Department getWithStudents(String code);
 }
