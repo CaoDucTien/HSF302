@@ -4,6 +4,7 @@ import com.hsf302.ch4.dto.StudentSummary;
 import com.hsf302.ch4.pojo.Gender;
 import com.hsf302.ch4.pojo.Student;
 import org.springframework.data.domain.Page;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -35,4 +36,6 @@ public interface StudentService {
     List<Student> findAboveAverageGpa();
     List<Student> findTopNInDepartment(String deptCode, int n);
     List<StudentSummary> getActiveSummaries();
+
+    Page<Student> findActiveByDepartment(String deptCode, int pageIndex, int size);
 }
