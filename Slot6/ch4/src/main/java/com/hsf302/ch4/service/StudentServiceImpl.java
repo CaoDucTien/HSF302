@@ -155,6 +155,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
+    public int deactivateLowGpa(double threshold) {
+        return studentRepository.deactivateLowGpa(threshold);
+    }
+
+    @Override
+    @Transactional
     public Student updateGpa(String studentCode, double newGpa) {
         if (newGpa < 0 || newGpa > 4) {
             throw new IllegalArgumentException("GPA phai trong khoang [0, 4]");
