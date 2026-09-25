@@ -33,6 +33,7 @@ public class ExerciseRunner implements CommandLineRunner {
         todo11();
         todo12();
         todo13();
+        todo14();
     }
 
     private void todo6() {
@@ -107,6 +108,11 @@ public class ExerciseRunner implements CommandLineRunner {
         printList("Search 'an'", studentService.searchByKeyword("an"));
         printList("Search '@gmail.com'", studentService.searchByKeyword("@gmail.com"));
         printList("Search empty keyword", studentService.searchByKeyword("   "));
+    }
+
+    private void todo14() {
+        title("TODO 14: DTO projection + aggregate + LEFT JOIN");
+        printList("Department statistics", departmentService.getStatistics());
     }
 
     private void title(String t) {
