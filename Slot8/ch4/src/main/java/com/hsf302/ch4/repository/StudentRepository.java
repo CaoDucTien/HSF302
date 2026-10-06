@@ -1,0 +1,123 @@
+package com.hsf302.ch4.repository;
+
+import com.hsf302.ch4.dto.EnrollmentView;
+import com.hsf302.ch4.dto.StudentCreditDTO;
+import com.hsf302.ch4.dto.StudentSummary;
+import com.hsf302.ch4.pojo.Department;
+import com.hsf302.ch4.pojo.Gender;
+import com.hsf302.ch4.pojo.Student;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+public interface StudentRepository extends JpaRepository<Student, Long>,
+                                           JpaSpecificationExecutor<Student> {
+
+    Optional<Student> findByStudentCode(String studentCode);
+    boolean existsByEmail(String email);
+    long countByActiveTrue();
+    long deleteByActiveFalse();
+
+    List<Student> findByFullNameContainingIgnoreCase(String keyword);
+    List<Student> findByEmailEndingWith(String suffix);
+    List<Student> findByEmailIsNull();
+
+    List<Student> findByGpaBetweenOrderByGpaDesc(double min, double max);
+    List<Student> findByGenderAndActiveTrue(Gender gender);
+    List<Student> findByDobAfter(LocalDate date);
+
+    List<Student> findByDepartment_CodeOrderByFullNameAsc(String code);
+    long countByDepartment_Code(String code);
+    List<Student> findTop3ByOrderByGpaDesc();
+
+    @Query("SELECT s FROM Student s " +
+           "WHERE s.department.code = :code AND s.gpa >= :minGpa " +
+           "ORDER BY s.gpa DESC")
+    List<Student> findGoodStudentsInDepartment(@Param("code") String code,
+                                               @Param("minGpa") double minGpa);
+
+    @Query("SELECT s FROM Student s " +
+           "WHERE LOWER(s.fullName) LIKE LOWER(CONCAT('%', :kw, '%')) " +
+           "   OR LOWER(s.email)    LIKE LOWER(CONCAT('%', :kw, '%')) " +
+           "ORDER BY s.fullName")
+    List<Student> searchByKeyword(@Param("kw") String keyword);
+
+    @Query("SELECT s FROM Student s " +
+           "WHERE s.gpa > (SELECT AVG(s2.gpa) FROM Student s2) " +
+           "ORDER BY s.gpa DESC")
+    List<Student> findAboveAverageGpa();
+
+    @Query(value = "SELECT TOP (:n) s.* FROM students s " +
+                   "JOIN departments d ON s.department_id = d.id " +
+                   "WHERE d.code = :code ORDER BY s.gpa DESC",
+           nativeQuery = true)
+    List<Student> findTopNByDepartmentNative(@Param("code") String code, @Param("n") int n);
+
+    @Query("SELECT s.studentCode AS studentCode, s.fullName AS fullName, " +
+           "       s.gpa AS gpa, d.name AS departmentName " +
+           "FROM Student s JOIN s.department d WHERE s.active = true ORDER BY s.fullName")
+    List<StudentSummary> findActiveSummaries();
+
+    @Query("SELECT s FROM Student s WHERE s.department.code = :code AND s.active = true")
+    Page<Student> findActiveByDepartment(@Param("code") String code, Pageable pageable);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Student s SET s.department = :to WHERE s.department = :from")
+    int transferStudents(@Param("from") Department from, @Param("to") Department to);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Student s SET s.active = false WHERE s.gpa < :threshold AND s.active = true")
+    int deactivateLowGpa(@Param("threshold") double threshold);
+
+    // ===== Exercise 2 - Part C =====
+    List<Student> findByCourses_CodeOrderByFullNameAsc(String courseCode);
+    long countByCourses_Code(String courseCode);
+    List<Student> findByCourses_CodeAndActiveTrueOrderByFullNameAsc(String courseCode);
+    List<Student> findByCoursesIsEmptyOrderByFullNameAsc();
+    boolean existsByStudentCodeAndCourses_Code(String studentCode, String courseCode);
+
+    // ===== Exercise 2 - Part D =====
+    @Query("SELECT s FROM Student s JOIN s.courses c " +
+           "WHERE c.code = :code AND s.gpa >= :minGpa ORDER BY s.gpa DESC")
+    List<Student> findGoodStudentsInCourse(@Param("code") String courseCode,
+                                           @Param("minGpa") double minGpa);
+
+    @Query("SELECT new com.hsf302.ch4.dto.StudentCreditDTO(s.studentCode, s.fullName, COUNT(c), SUM(c.credits)) " +
+           "FROM Student s JOIN s.courses c " +
+           "GROUP BY s.studentCode, s.fullName " +
+           "HAVING SUM(c.credits) >= :minCredits " +
+           "ORDER BY SUM(c.credits) DESC, s.fullName")
+    List<StudentCreditDTO> getCreditSummary(@Param("minCredits") long minCredits);
+
+    @Query("SELECT s FROM Student s WHERE SIZE(s.courses) > :n ORDER BY s.fullName")
+    List<Student> findStudentsWithMoreThanNCourses(@Param("n") int n);
+
+    @Query("SELECT s FROM Student s LEFT JOIN FETCH s.courses WHERE s.studentCode = :code")
+    Optional<Student> findByStudentCodeWithCourses(@Param("code") String studentCode);
+
+    @Query("SELECT s.studentCode AS studentCode, s.fullName AS fullName, " +
+           "       c.code AS courseCode, c.name AS courseName, c.credits AS credits " +
+           "FROM Student s JOIN s.department d JOIN s.courses c " +
+           "WHERE d.code = :deptCode " +
+           "ORDER BY s.studentCode, c.code")
+    List<EnrollmentView> findEnrollmentsOfDepartment(@Param("deptCode") String deptCode);
+
+    @Query(value = "SELECT s FROM Student s JOIN s.courses c WHERE c.code = :code",
+           countQuery = "SELECT COUNT(s) FROM Student s JOIN s.courses c WHERE c.code = :code")
+    Page<Student> findPageByCourseCode(@Param("code") String courseCode, Pageable pageable);
+
+    // ===== Exercise 2 - Part E =====
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE FROM student_courses " +
+                   "WHERE student_id IN (SELECT id FROM students WHERE active = 0)",
+           nativeQuery = true)
+    int deleteEnrollmentsOfInactiveStudents();
+}

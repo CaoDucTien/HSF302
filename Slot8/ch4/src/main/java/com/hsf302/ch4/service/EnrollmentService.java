@@ -1,0 +1,40 @@
+package com.hsf302.ch4.service;
+
+import com.hsf302.ch4.dto.EnrollmentView;
+import com.hsf302.ch4.dto.StudentCreditDTO;
+import com.hsf302.ch4.pojo.Course;
+import com.hsf302.ch4.pojo.Student;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
+public interface EnrollmentService {
+
+    // ===== Part B =====
+    List<Course> getCoursesOfStudent(String studentCode);
+    List<Student> getStudentsOfCourse(String courseCode);
+
+    // ===== Part C =====
+    List<Student> findStudentsInCourse(String courseCode);
+    long countStudentsInCourse(String courseCode);
+    List<Student> findActiveStudentsInCourse(String courseCode);
+    List<Student> findStudentsWithoutCourses();
+    boolean isEnrolled(String studentCode, String courseCode);
+
+    // ===== Part D =====
+    List<Student> findGoodStudentsInCourse(String courseCode, double minGpa);
+    List<StudentCreditDTO> getCreditSummary(int minCredits);
+    List<Student> findStudentsWithMoreThan(int n);
+    Student getStudentWithCourses(String studentCode);
+    List<EnrollmentView> getEnrollmentsOfDepartment(String deptCode);
+    Page<Student> findStudentsInCoursePage(String courseCode, int pageIndex, int size);
+
+    // ===== Bonus =====
+    List<Student> search(String courseCode, String semester, String deptCode, Double minGpa);
+
+    // ===== Part E =====
+    void enroll(String studentCode, String courseCode);
+    void unenroll(String studentCode, String courseCode);
+    void switchCourse(String studentCode, String fromCode, String toCode);
+    int removeEnrollmentsOfInactiveStudents();
+}
