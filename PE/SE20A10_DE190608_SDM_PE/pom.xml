@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- [VỊ TRÍ 1]: Kiểm tra version Spring Boot theo đề (4.1.1 hoặc 4.1.0) -->
+        <version>4.1.1</version>
+        <relativePath/>
+    </parent>
+
+    <!-- [VỊ TRÍ 2]: Mã sinh viên của bạn (fu.<mã_sv> hoặc com.<mã_sv> tuỳ đề) -->
+    <groupId>fu.de190608</groupId>
+
+    <!-- [VỊ TRÍ 3]: Mã đề thi / Tên Project của bài mới -->
+    <artifactId>SE20A10_DE190608_SDM_PE</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>SE20A10_DE190608_SDM_PE</name>
+    <description>Mô tả bài thi mới</description>
+    <packaging>jar</packaging>
+
+    <properties>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- Web MVC (Spring Boot 4.x dùng webmvc, 3.x dùng web) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+
+        <!-- Thymeleaf (Giao diện HTML) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- JPA / Hibernate (Kết nối CSDL) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Validation (@NotBlank, @Min, @Size...) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- [VỊ TRÍ 5]: Driver Database (Mặc định SQL Server). Nếu đề dùng MySQL thì đổi thành mysql-connector-j -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Starter test mặc định -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- [VỊ TRÍ 6]: Đổi trùng với artifactId ở trên để khi nén/build ra đúng tên đề bài -->
+        <finalName>SE20A10_DE190608_SDM_PE</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
